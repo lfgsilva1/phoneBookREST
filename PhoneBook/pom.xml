@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.example</groupId>
+  <artifactId>PhoneBook</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <modules>
+    <module>PhoneBookREST</module>
+    <module>PhoneBookBusiness</module>
+    <module>PhoneBookData</module>
+    <module>EAR</module>
+  </modules>
+
+  <name>PhoneBook</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <wildfly-plugin-version>2.0.1.Final</wildfly-plugin-version>
+  </properties>
+
+  <profiles>
+    <!-- https://cleanprogrammer.net/deploy-applications-to-wildfly-server-using-wildfly-maven-plugin/ -->
+    <!--<profile>
+      <id>wildfly-remote</id>
+      <properties>
+        <wildfly-id>wildfly-remote</wildfly-id>
+        <wildfly-hostname>192.168.1.100</wildfly-hostname>
+        <wildfly-port>9990</wildfly-port>
+        <wildfly-username>admin</wildfly-username>
+        <wildfly-password>secret</wildfly-password>
+      </properties>
+    </profile>-->
+    <profile>
+      <id>wildfly-local</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <wildfly-id>wildfly-local</wildfly-id>
+        <wildfly-home>/home/lfgsilva/Downloads/wildfly-17.0.1.Final</wildfly-home>
+        <wildfly-hostname>127.0.0.1</wildfly-hostname>
+        <wildfly-port>9990</wildfly-port>
+        <wildfly-username>test</wildfly-username>
+        <wildfly-password>test</wildfly-password>
+      </properties>
+    </profile>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--<dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.0.0.Alpha3</version>
+    </dependency>-->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.4.10.Final</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>6.1.0.Final</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.hibernate.common/hibernate-commons-annotations -->
+    <dependency>
+      <groupId>org.hibernate.common</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <version>5.1.0.Final</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api -->
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <version>1.0.2.Final</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>2.0.1.Final</version>
+    </dependency>
+
+
+    <!-- TO EJB 3.2-->
+    <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>8.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- TO JAX-RS 2.0 -->
+    <!-- https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api -->
+    <!--<dependency>
+      <groupId>javax.xml.ws</groupId>
+      <artifactId>jaxws-api</artifactId>
+      <version>2.3.1</version>
+    </dependency>-->
+    <!-- https://mvnrepository.com/artifact/comhttps://pplware.sapo.pt/page/2/.sun.xml.ws/jaxws-rt -->
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.3.2</version>
+      <type>pom</type>
+    </dependency>
+
+
+    <!-- TO CONNECT mysql database -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.17</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+
+        <!--######################################################################## -->
+        <!-- war plugin -skinny wars mode! -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.3</version>
+          <!-- configure to use skinny war use case -->
+          <configuration>
+            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+          </configuration>
+        </plugin>
+        <!-- ejb plugin -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-ejb-plugin</artifactId>
+          <version>3.0.1</version>
+          <configuration>
+            <ejbVersion>3.2</ejbVersion>
+          </configuration>
+        </plugin>
+        <!-- ear plugin to gather all modules -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-ear-plugin</artifactId>
+          <version>3.0.2</version>
+          <configuration>
+            <version>8</version>
+            <generateApplicationXml>true</generateApplicationXml>
+            <defaultLibBundleDir>lib/</defaultLibBundleDir>
+            <!--<finalName>${project.name}</finalName>-->
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+              </manifest>
+            </archive>
+            <modules>
+              <webModule>
+                <groupId>org.example</groupId>
+                <artifactId>PhoneBookREST</artifactId>
+              </webModule>
+              <ejbModule>
+                <groupId>org.example</groupId>
+                <artifactId>PhoneBookBusiness</artifactId>
+              </ejbModule>
+              <ejbModule>
+                <groupId>org.example</groupId>
+                <artifactId>PhoneBookData</artifactId>
+              </ejbModule>
+            </modules>
+          </configuration>
+        </plugin>
+
+        <!-- wildfly plugin with configurations-->
+        <plugin>
+          <groupId>org.wildfly.plugins</groupId>
+          <artifactId>wildfly-maven-plugin</artifactId>
+          <version>${wildfly-plugin-version}</version>
+          <!--<configuration>
+            <skip>false</skip>
+            <hostname>localhost</hostname>
+            <port>${server.port}</port>
+            <username>root</username>
+            <password>is</password>
+            <filename>${project.name}.ear</filename>
+          </configuration> -->
+          <configuration>
+            <hostname>${wildfly-hostname}</hostname>
+            <port>${wildfly-port}</port>
+            <username>${wildfly-username}</username>
+            <password>${wildfly-password}</password>
+            <filename>${project.name}.ear</filename>
+          </configuration>
+        </plugin>
+        <!--######################################################################## -->
+
+        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
